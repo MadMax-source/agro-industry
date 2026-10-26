@@ -1,13 +1,11 @@
 import type { Metadata, Viewport } from 'next'
-import { Inter, Manrope } from 'next/font/google'
+import { Inter, Playfair_Display } from 'next/font/google'
 import { Analytics } from '@vercel/analytics/next'
 import { Providers } from '@/components/providers'
-import { SiteHeader } from '@/components/layout/site-header'
-import { SiteFooter } from '@/components/layout/site-footer'
 import './globals.css'
 
 const inter = Inter({ subsets: ['latin'], variable: '--font-inter' })
-const manrope = Manrope({ subsets: ['latin'], variable: '--font-manrope' })
+const playfair = Playfair_Display({ subsets: ['latin'], variable: '--font-playfair' })
 
 export const metadata: Metadata = {
   title: {
@@ -15,7 +13,7 @@ export const metadata: Metadata = {
     template: '%s | Funalom Enterprises',
   },
   description:
-    'Shop quality fertilizers, crop protection products, seeds, plant growth regulators, and farm essentials from Funalom Enterprises in Lagos, Nigeria. Order easily via WhatsApp.',
+    'Shop quality fertilizers, crop protection products, seeds, plant growth regulators, and farm essentials from Funalom Enterprises in Lagos, Nigeria.',
   keywords: [
     'agro store Lagos',
     'fertilizers Nigeria',
@@ -27,7 +25,7 @@ export const metadata: Metadata = {
   ],
   openGraph: {
     title: 'Funalom Enterprises',
-    description: 'Your trusted partner in modern agriculture. Order agricultural inputs via WhatsApp.',
+    description: 'Your trusted partner in modern agriculture. Quality agricultural inputs from Lagos, Nigeria.',
     type: 'website',
     locale: 'en_NG',
     images: ['/images/hero-farm.png'],
@@ -42,23 +40,9 @@ export const viewport: Viewport = {
 
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
   return (
-    <html lang="en" className={`${inter.variable} ${manrope.variable} bg-background`}>
+    <html lang="en" className={`${inter.variable} ${playfair.variable} bg-background`}>
       <body className="font-sans antialiased">
-        <Providers>
-          <a
-            href="#main-content"
-            className="sr-only focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:z-[100] focus:rounded-md focus:bg-primary focus:px-4 focus:py-2 focus:text-primary-foreground"
-          >
-            Skip to content
-          </a>
-          <div className="flex min-h-dvh flex-col">
-            <SiteHeader />
-            <main id="main-content" className="flex-1">
-              {children}
-            </main>
-            <SiteFooter />
-          </div>
-        </Providers>
+        <Providers>{children}</Providers>
         {process.env.NODE_ENV === 'production' && <Analytics />}
       </body>
     </html>

@@ -57,6 +57,10 @@ export interface BusinessSettings {
   whatsappTemplate: string
 }
 
+export type CategoryDeletionStrategy =
+  | { type: 'reassign'; targetCategoryId: string }
+  | { type: 'unpublish' }
+
 export interface CatalogFilters {
   query: string
   categoryId: string

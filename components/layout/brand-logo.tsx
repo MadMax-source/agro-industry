@@ -21,7 +21,7 @@ export function BrandLogo({ className, inverted = false }: { className?: string;
       <span className="flex flex-col leading-none">
         <span
           className={cn(
-            'font-heading text-lg font-extrabold tracking-tight',
+            'font-heading text-lg font-bold tracking-tight',
             inverted ? 'text-primary-foreground' : 'text-foreground',
           )}
         >

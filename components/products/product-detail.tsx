@@ -11,7 +11,8 @@ import { ProductGallery } from '@/components/products/product-gallery'
 import { ProductInfoTabs } from '@/components/products/product-info-tabs'
 import { QuantityStepper } from '@/components/products/quantity-stepper'
 import { StockBadge } from '@/components/products/stock-badge'
-import { WhatsAppOrderButton } from '@/components/products/whatsapp-order-button'
+import { ProceedToBuyButton } from '@/components/products/proceed-to-buy-button'
+import { Reveal } from '@/components/shared/reveal'
 import { ProductCard } from '@/components/products/product-card'
 import { SectionHeading } from '@/components/shared/section-heading'
 
@@ -62,9 +63,11 @@ export function ProductDetail({ slug }: { slug: string }) {
         />
 
         <div className="mt-8 grid gap-10 lg:grid-cols-2 lg:gap-14">
-          <ProductGallery images={product.images} name={product.name} />
+          <Reveal>
+            <ProductGallery images={product.images} name={product.name} />
+          </Reveal>
 
-          <div className="flex flex-col">
+          <Reveal delay={0.1} className="flex flex-col">
             <div className="flex flex-wrap items-center gap-3">
               {category && (
                 <Link
@@ -77,13 +80,13 @@ export function ProductDetail({ slug }: { slug: string }) {
               <StockBadge stock={product.stock} showCount />
             </div>
 
-            <h1 className="mt-4 font-heading text-3xl font-extrabold tracking-tight text-balance text-foreground md:text-4xl">
+            <h1 className="mt-4 font-heading text-3xl font-bold tracking-tight text-balance text-foreground md:text-4xl">
               {product.name}
             </h1>
             <p className="mt-3 text-lg leading-relaxed text-pretty text-muted-foreground">{product.shortDescription}</p>
 
             <div className="mt-6 flex items-baseline gap-2">
-              <p className="font-heading text-4xl font-extrabold text-foreground">{formatNaira(product.price)}</p>
+              <p className="font-heading text-4xl font-bold text-foreground">{formatNaira(product.price)}</p>
               <p className="text-sm text-muted-foreground">per {product.packSize}</p>
             </div>
 
@@ -118,14 +121,14 @@ export function ProductDetail({ slug }: { slug: string }) {
                   </span>
                 </p>
               )}
-              <WhatsAppOrderButton product={product} quantity={quantity} size="lg" />
+              <ProceedToBuyButton product={product} quantity={quantity} />
               <p className="text-center text-xs leading-relaxed text-muted-foreground">
                 {outOfStock
-                  ? 'This product is currently out of stock. Message us on WhatsApp to be notified when it returns.'
-                  : 'Your order opens in WhatsApp, pre-filled and ready to send. Final price and delivery are confirmed by our team.'}
+                  ? 'This product is currently out of stock. Contact us to be notified when it returns.'
+                  : 'Proceed to Buy sends your order to our sales team. Final price, payment, and delivery are confirmed personally.'}
               </p>
             </div>
-          </div>
+          </Reveal>
         </div>
 
         <ProductInfoTabs product={product} />

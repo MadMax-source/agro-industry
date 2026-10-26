@@ -2,8 +2,8 @@ import { MessageCircle, MousePointerClick, Search } from 'lucide-react'
 
 const STEPS = [
   { icon: Search, title: 'Find your product', description: 'Browse by category or search by name, brand, or active ingredient.' },
-  { icon: MousePointerClick, title: 'Tap "Buy on WhatsApp"', description: 'We pre-fill your order with the product, pack size, price, and quantity.' },
-  { icon: MessageCircle, title: 'Confirm with our team', description: 'Send the message and we confirm availability, payment, and delivery.' },
+  { icon: MousePointerClick, title: 'Tap "Buy"', description: 'Choose your quantity, review the total, then tap Proceed to Buy.' },
+  { icon: MessageCircle, title: 'Confirm with our team', description: 'Our sales team confirms availability, payment, and delivery personally.' },
 ]
 
 export function HowToOrder() {
@@ -16,7 +16,7 @@ export function HowToOrder() {
             Order in three simple steps
           </h2>
           <p className="mt-3 leading-relaxed text-pretty text-primary-foreground/80">
-            No account or checkout needed. Every order is handled personally by our team on WhatsApp.
+            No account or checkout needed. Every order is handled personally by our team.
           </p>
         </div>
         <ol className="mt-12 grid gap-8 md:grid-cols-3">

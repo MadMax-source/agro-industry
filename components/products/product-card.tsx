@@ -6,7 +6,7 @@ import type { Category, Product } from '@/types'
 import { formatNaira } from '@/lib/catalog'
 import { ProductImage } from '@/components/products/product-image'
 import { StockBadge } from '@/components/products/stock-badge'
-import { WhatsAppOrderButton } from '@/components/products/whatsapp-order-button'
+import { BuyDialog } from '@/components/products/buy-dialog'
 
 interface ProductCardProps {
   product: Product
@@ -19,11 +19,12 @@ export function ProductCard({ product, category, priority }: ProductCardProps) {
 
   return (
     <motion.article
-      initial={{ opacity: 0, y: 12 }}
+      initial={{ opacity: 0, y: 20 }}
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true, margin: '-40px' }}
-      transition={{ duration: 0.35, ease: 'easeOut' }}
-      className="group flex h-full flex-col overflow-hidden rounded-xl border border-border bg-card transition-shadow hover:shadow-lg hover:shadow-primary/5"
+      transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
+      whileHover={{ y: -4 }}
+      className="group flex h-full flex-col overflow-hidden rounded-xl border border-border bg-card shadow-sm transition-shadow duration-300 hover:shadow-xl hover:shadow-primary/10"
     >
       <Link href={href} className="relative block aspect-square overflow-hidden bg-secondary" tabIndex={-1} aria-hidden="true">
         <ProductImage
@@ -31,7 +32,11 @@ export function ProductCard({ product, category, priority }: ProductCardProps) {
           alt={product.name}
           priority={priority}
           sizes="(min-width: 1280px) 25vw, (min-width: 768px) 33vw, (min-width: 640px) 50vw, 100vw"
-          className="transition-transform duration-500 group-hover:scale-105"
+          className="transition-transform duration-700 ease-out group-hover:scale-110"
+        />
+        <div
+          className="absolute inset-0 bg-gradient-to-t from-brand-deep/30 to-transparent opacity-0 transition-opacity duration-500 group-hover:opacity-100"
+          aria-hidden="true"
         />
         <div className="absolute left-3 top-3">
           <StockBadge stock={product.stock} className="bg-card/95 backdrop-blur" />
@@ -51,8 +56,8 @@ export function ProductCard({ product, category, priority }: ProductCardProps) {
           <span className="shrink-0 text-muted-foreground">{product.brand}</span>
         </div>
 
-        <h3 className="font-heading text-base font-bold leading-snug text-foreground">
-          <Link href={href} className="hover:text-primary">
+        <h3 className="font-heading text-lg font-bold leading-snug text-foreground">
+          <Link href={href} className="transition-colors hover:text-primary">
             {product.name}
           </Link>
         </h3>
@@ -68,7 +73,7 @@ export function ProductCard({ product, category, priority }: ProductCardProps) {
 
         <div className="mt-auto flex items-end justify-between gap-2 border-t border-border pt-3">
           <div>
-            <p className="font-heading text-xl font-extrabold text-foreground">{formatNaira(product.price)}</p>
+            <p className="font-heading text-xl font-bold text-foreground">{formatNaira(product.price)}</p>
             <p className="text-xs text-muted-foreground">per {product.packSize}</p>
           </div>
           {product.formulation && (
@@ -78,7 +83,7 @@ export function ProductCard({ product, category, priority }: ProductCardProps) {
           )}
         </div>
 
-        <WhatsAppOrderButton product={product} />
+        <BuyDialog product={product} />
       </div>
     </motion.article>
   )
