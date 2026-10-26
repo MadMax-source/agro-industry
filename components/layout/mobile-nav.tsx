@@ -5,7 +5,6 @@ import Link from 'next/link'
 import { AnimatePresence, motion } from 'motion/react'
 import { ChevronDown, X } from 'lucide-react'
 import { BrandLogo } from '@/components/layout/brand-logo'
-import { WhatsAppChatButton } from '@/components/shared/whatsapp-chat-button'
 import { usePublicCategories } from '@/hooks/use-storefront'
 import { cn } from '@/lib/utils'
 
@@ -124,7 +123,13 @@ export function MobileNav({ open, onClose, pathname }: MobileNavProps) {
             </nav>
 
             <div className="border-t border-border p-4">
-              <WhatsAppChatButton className="h-12 w-full bg-primary text-primary-foreground hover:bg-primary/90" />
+              <Link
+                href="/products"
+                onClick={onClose}
+                className="flex h-12 w-full items-center justify-center rounded-lg bg-primary font-semibold text-primary-foreground hover:bg-primary/90"
+              >
+                Shop Products
+              </Link>
             </div>
           </motion.div>
         </div>

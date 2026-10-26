@@ -3,7 +3,6 @@
 import Link from 'next/link'
 import { Mail, MapPin, Phone } from 'lucide-react'
 import { BrandLogo } from '@/components/layout/brand-logo'
-import { WhatsAppChatButton } from '@/components/shared/whatsapp-chat-button'
 import { usePublicCategories, useSettings } from '@/hooks/use-storefront'
 
 const QUICK_LINKS = [
@@ -23,7 +22,12 @@ export function SiteFooter() {
         <div className="lg:col-span-4">
           <BrandLogo inverted />
           <p className="mt-5 max-w-sm text-sm leading-relaxed text-primary-foreground/75">{settings.footerDescription}</p>
-          <WhatsAppChatButton className="mt-6 h-11 bg-primary-foreground px-5 text-sm text-brand-deep hover:bg-primary-foreground/90" />
+          <Link
+            href="/contact"
+            className="mt-6 inline-flex h-11 items-center rounded-lg bg-primary-foreground px-5 text-sm font-semibold text-brand-deep transition-colors hover:bg-primary-foreground/90"
+          >
+            Get in touch
+          </Link>
         </div>
 
         <FooterColumn title="Quick Links" className="lg:col-span-2">

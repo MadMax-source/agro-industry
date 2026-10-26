@@ -1,7 +1,6 @@
 import Image from 'next/image'
 import Link from 'next/link'
 import { ArrowRight, ShieldCheck, Truck, Sprout } from 'lucide-react'
-import { WhatsAppChatButton } from '@/components/shared/whatsapp-chat-button'
 
 const HIGHLIGHTS = [
   { icon: ShieldCheck, label: 'Genuine products' },
@@ -30,7 +29,7 @@ export function HeroSection() {
           </p>
           <h1
             id="hero-title"
-            className="mt-6 font-heading text-4xl font-extrabold leading-[1.05] tracking-tight text-balance text-primary-foreground sm:text-5xl lg:text-6xl"
+            className="mt-6 font-heading text-4xl font-bold leading-[1.05] tracking-tight text-balance text-primary-foreground sm:text-5xl lg:text-6xl"
           >
             Your trusted partner in modern agriculture
           </h1>
@@ -47,7 +46,12 @@ export function HeroSection() {
               Shop Products
               <ArrowRight className="size-4" aria-hidden="true" />
             </Link>
-            <WhatsAppChatButton className="h-12 border border-primary-foreground/40 px-6 text-base text-primary-foreground hover:bg-primary-foreground/10" />
+            <Link
+              href="/about"
+              className="inline-flex h-12 items-center justify-center rounded-lg border border-primary-foreground/40 px-6 text-base font-semibold text-primary-foreground transition-colors hover:bg-primary-foreground/10"
+            >
+              Our Story
+            </Link>
           </div>
 
           <ul className="mt-12 flex flex-wrap gap-x-8 gap-y-3">

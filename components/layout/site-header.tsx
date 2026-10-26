@@ -9,7 +9,6 @@ import { BrandLogo } from '@/components/layout/brand-logo'
 import { CategoriesMenu } from '@/components/layout/categories-menu'
 import { HeaderSearch } from '@/components/layout/header-search'
 import { MobileNav } from '@/components/layout/mobile-nav'
-import { WhatsAppChatButton } from '@/components/shared/whatsapp-chat-button'
 import { cn } from '@/lib/utils'
 
 export const NAV_LINKS = [
@@ -71,7 +70,12 @@ export function SiteHeader() {
             <span className="sr-only">{searchOpen ? 'Close search' : 'Search products'}</span>
           </button>
 
-          <WhatsAppChatButton className="hidden h-10 bg-primary px-4 text-sm text-primary-foreground hover:bg-primary/90 sm:inline-flex" />
+          <Link
+            href="/contact"
+            className="hidden h-10 items-center rounded-lg bg-primary px-4 text-sm font-semibold text-primary-foreground transition-all hover:bg-primary/90 hover:shadow-md sm:inline-flex"
+          >
+            Contact Us
+          </Link>
 
           <button
             type="button"
