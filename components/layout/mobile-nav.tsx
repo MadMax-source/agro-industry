@@ -1,6 +1,7 @@
 'use client'
 
 import { useEffect, useState } from 'react'
+import { createPortal } from 'react-dom'
 import Link from 'next/link'
 import { AnimatePresence, motion } from 'motion/react'
 import { ChevronDown, X } from 'lucide-react'
@@ -24,6 +25,11 @@ const LINKS = [
 export function MobileNav({ open, onClose, pathname }: MobileNavProps) {
   const categories = usePublicCategories()
   const [categoriesOpen, setCategoriesOpen] = useState(false)
+  const [mounted, setMounted] = useState(false)
+
+  useEffect(() => {
+    setMounted(true)
+  }, [])
 
   useEffect(() => {
     if (!open) return
@@ -39,7 +45,9 @@ export function MobileNav({ open, onClose, pathname }: MobileNavProps) {
     }
   }, [open, onClose])
 
-  return (
+  if (!mounted) return null
+
+  return createPortal(
     <AnimatePresence>
       {open && (
         <div className="fixed inset-0 z-[60] lg:hidden">
@@ -134,7 +142,8 @@ export function MobileNav({ open, onClose, pathname }: MobileNavProps) {
           </motion.div>
         </div>
       )}
-    </AnimatePresence>
+    </AnimatePresence>,
+    document.body,
   )
 }
 
