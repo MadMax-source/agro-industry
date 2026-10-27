@@ -8,11 +8,13 @@ import { useAdminAuth } from '@/lib/admin-auth'
 import { AdminSidebar } from '@/components/admin/admin-sidebar'
 import { Sheet, SheetContent, SheetTitle } from '@/components/ui/sheet'
 import { BrandLogo } from '@/components/layout/brand-logo'
+import { useAdminCatalog } from '@/contexts/admin-catalog-context'
 
 export function AdminShell({ children }: { children: ReactNode }) {
   const pathname = usePathname()
   const router = useRouter()
   const { status, load } = useAdminAuth()
+  const { loading: catalogLoading, error: catalogError, refresh } = useAdminCatalog()
   const [drawerOpen, setDrawerOpen] = useState(false)
   const isLogin = pathname === '/admin/login'
 
@@ -34,6 +36,14 @@ export function AdminShell({ children }: { children: ReactNode }) {
     return (
       <div className="flex min-h-dvh items-center justify-center bg-muted/40">
         <Loader2 className="size-6 animate-spin text-primary" aria-label="Loading admin" />
+      </div>
+    )
+  }
+
+  if (catalogLoading) {
+    return (
+      <div className="flex min-h-dvh items-center justify-center bg-muted/40">
+        <Loader2 className="size-6 animate-spin text-primary" aria-label="Loading catalogue" />
       </div>
     )
   }
@@ -65,18 +75,29 @@ export function AdminShell({ children }: { children: ReactNode }) {
         </header>
 
         <main className="flex-1 px-4 py-6 sm:px-6 lg:px-10 lg:py-10">
-          <AnimatePresence mode="wait" initial={false}>
-            <motion.div
-              key={pathname}
-              initial={{ opacity: 0, y: 12 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -8 }}
-              transition={{ duration: 0.3, ease: [0.22, 1, 0.36, 1] }}
-              className="mx-auto max-w-6xl"
-            >
-              {children}
-            </motion.div>
-          </AnimatePresence>
+          <div className="mx-auto max-w-6xl">
+            {catalogError ? (
+              <div role="alert" className="flex items-center justify-between gap-4 rounded-lg border border-destructive/30 bg-destructive/10 p-4 text-sm">
+                <p className="text-destructive">{catalogError}</p>
+                <button type="button" onClick={() => void refresh()} className="shrink-0 font-semibold underline">
+                  Retry
+                </button>
+              </div>
+            ) : null}
+            {!catalogError && (
+              <AnimatePresence mode="wait" initial={false}>
+                <motion.div
+                  key={pathname}
+                  initial={{ opacity: 0, y: 12 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: -8 }}
+                  transition={{ duration: 0.3, ease: [0.22, 1, 0.36, 1] }}
+                >
+                  {children}
+                </motion.div>
+              </AnimatePresence>
+            )}
+          </div>
         </main>
       </div>
     </div>

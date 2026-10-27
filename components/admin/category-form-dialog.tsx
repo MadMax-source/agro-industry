@@ -6,7 +6,7 @@ import { zodResolver } from '@hookform/resolvers/zod'
 import { z } from 'zod'
 import { toast } from 'sonner'
 import type { Category } from '@/types'
-import { useCatalogStore } from '@/store/catalog-store'
+import { useAdminCatalog } from '@/contexts/admin-catalog-context'
 import { SLUG_PATTERN, createId, isImageSource, slugify } from '@/lib/admin-utils'
 import { FormField } from '@/components/admin/form-field'
 import { ProductImage } from '@/components/products/product-image'
@@ -45,9 +45,9 @@ export function CategoryFormDialog({ open, category, onOpenChange }: CategoryFor
 }
 
 function CategoryForm({ category, onDone }: { category: Category | null; onDone: () => void }) {
-  const categories = useCatalogStore((s) => s.categories)
-  const upsertCategory = useCatalogStore((s) => s.upsertCategory)
+  const { categories, saveCategory, uploadMedia } = useAdminCatalog()
   const [slugTouched, setSlugTouched] = useState(!!category)
+  const [uploadingImage, setUploadingImage] = useState(false)
 
   const schema = useMemo(
     () =>
@@ -64,7 +64,7 @@ function CategoryForm({ category, onDone }: { category: Category | null; onDone:
     handleSubmit,
     setValue,
     control,
-    formState: { errors },
+    formState: { errors, isSubmitting },
   } = useForm<CategoryValues>({
     resolver: zodResolver(schema),
     defaultValues: {
@@ -83,23 +83,41 @@ function CategoryForm({ category, onDone }: { category: Category | null; onDone:
   const isActive = useWatch({ control, name: 'isActive' })
   const nameField = register('name')
 
-  const onSubmit = (values: CategoryValues) => {
+  const onSubmit = async (values: CategoryValues) => {
     const now = new Date().toISOString()
-    upsertCategory({
-      id: category?.id ?? createId('cat'),
-      name: values.name.trim(),
-      slug: values.slug,
-      description: values.description.trim(),
-      image: values.image,
-      displayOrder: values.displayOrder,
-      isActive: values.isActive,
-      seoTitle: values.seoTitle || undefined,
-      seoDescription: values.seoDescription || undefined,
-      createdAt: category?.createdAt ?? now,
-      updatedAt: now,
-    })
-    toast.success(category ? 'Category updated' : 'Category created')
-    onDone()
+    try {
+      await saveCategory({
+        id: category?.id ?? createId('cat'),
+        name: values.name.trim(),
+        slug: values.slug,
+        description: values.description.trim(),
+        image: values.image,
+        displayOrder: values.displayOrder,
+        isActive: values.isActive,
+        seoTitle: values.seoTitle || undefined,
+        seoDescription: values.seoDescription || undefined,
+        createdAt: category?.createdAt ?? now,
+        updatedAt: now,
+      })
+      toast.success(category ? 'Category updated' : 'Category created')
+      onDone()
+    } catch (error) {
+      toast.error(error instanceof Error ? error.message : 'Unable to save category.')
+    }
+  }
+
+  const uploadCategoryImage = async (file?: File) => {
+    if (!file) return
+    setUploadingImage(true)
+    try {
+      const url = await uploadMedia(file, 'categories')
+      setValue('image', url, { shouldValidate: true, shouldDirty: true })
+      toast.success('Category image uploaded')
+    } catch (error) {
+      toast.error(error instanceof Error ? error.message : 'Unable to upload category image.')
+    } finally {
+      setUploadingImage(false)
+    }
   }
 
   return (
@@ -132,11 +150,25 @@ function CategoryForm({ category, onDone }: { category: Category | null; onDone:
         <Textarea id="cat-description" rows={3} aria-invalid={!!errors.description} {...register('description')} />
       </FormField>
       <FormField id="cat-image" label="Image" optional error={errors.image?.message}>
-        <div className="flex gap-3">
+        <div className="flex items-start gap-3">
           <div className="relative size-14 shrink-0 overflow-hidden rounded-lg border border-border bg-secondary">
             <ProductImage src={isImageSource(image) ? image : undefined} alt="Category image preview" sizes="56px" />
           </div>
-          <Input id="cat-image" aria-invalid={!!errors.image} placeholder="/images/categories/..." {...register('image')} />
+          <div className="flex min-w-0 flex-1 flex-col gap-2">
+            <Input id="cat-image" aria-invalid={!!errors.image} placeholder="/images/categories/... or https://..." {...register('image')} />
+            <Input
+              id="cat-image-upload"
+              type="file"
+              accept="image/jpeg,image/png,image/webp,image/avif"
+              disabled={uploadingImage}
+              aria-label="Upload category image"
+              onChange={(event) => {
+                void uploadCategoryImage(event.target.files?.[0])
+                event.target.value = ''
+              }}
+            />
+            <p className="text-xs text-muted-foreground">JPEG, PNG, WebP or AVIF; max 4 MB.</p>
+          </div>
         </div>
       </FormField>
       <FormField id="cat-seo-title" label="SEO title" optional error={errors.seoTitle?.message}>
@@ -156,8 +188,8 @@ function CategoryForm({ category, onDone }: { category: Category | null; onDone:
         <button type="button" onClick={onDone} className="inline-flex h-10 items-center justify-center rounded-lg border border-border px-4 text-sm font-semibold hover:bg-secondary">
           Cancel
         </button>
-        <button type="submit" className="inline-flex h-10 items-center justify-center rounded-lg bg-primary px-5 text-sm font-semibold text-primary-foreground hover:bg-primary/90">
-          {category ? 'Save changes' : 'Create category'}
+        <button type="submit" disabled={isSubmitting || uploadingImage} className="inline-flex h-10 items-center justify-center rounded-lg bg-primary px-5 text-sm font-semibold text-primary-foreground hover:bg-primary/90 disabled:opacity-70">
+        {isSubmitting ? 'Saving…' : category ? 'Save changes' : 'Create category'}
         </button>
       </DialogFooter>
     </form>

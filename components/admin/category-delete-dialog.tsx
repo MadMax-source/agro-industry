@@ -3,7 +3,7 @@
 import { useEffect, useState } from 'react'
 import { toast } from 'sonner'
 import type { Category, CategoryDeletionStrategy } from '@/types'
-import { useCatalogStore } from '@/store/catalog-store'
+import { useAdminCatalog } from '@/contexts/admin-catalog-context'
 import { SelectChevron, nativeSelectClass } from '@/components/admin/form-field'
 import {
   AlertDialog,
@@ -23,8 +23,7 @@ interface CategoryDeleteDialogProps {
 }
 
 export function CategoryDeleteDialog({ category, productCount, onOpenChange }: CategoryDeleteDialogProps) {
-  const categories = useCatalogStore((s) => s.categories)
-  const deleteCategory = useCatalogStore((s) => s.deleteCategory)
+  const { categories, deleteCategory } = useAdminCatalog()
   const [strategy, setStrategy] = useState<CategoryDeletionStrategy>({ type: 'unpublish' })
   const availableCategories = categories.filter((item) => item.id !== category?.id)
   const targetCategoryId = strategy.type === 'reassign' ? strategy.targetCategoryId : ''
@@ -34,20 +33,24 @@ export function CategoryDeleteDialog({ category, productCount, onOpenChange }: C
     setStrategy({ type: 'unpublish' })
   }, [category?.id])
 
-  const confirmDelete = () => {
+  const confirmDelete = async () => {
     if (!category) return
 
     if (strategy.type === 'reassign' && !availableCategories.some((item) => item.id === strategy.targetCategoryId)) {
       return
     }
 
-    deleteCategory(category.id, strategy)
-    toast.success(
-      productCount > 0 && strategy.type === 'unpublish'
-        ? `Category deleted; ${productCount} products moved to drafts`
-        : 'Category deleted',
-    )
-    onOpenChange(false)
+    try {
+      await deleteCategory(category.id, strategy)
+      toast.success(
+        productCount > 0 && strategy.type === 'unpublish'
+          ? `Category deleted; ${productCount} products moved to drafts`
+          : 'Category deleted',
+      )
+      onOpenChange(false)
+    } catch (error) {
+      toast.error(error instanceof Error ? error.message : 'Unable to delete category.')
+    }
   }
 
   return (

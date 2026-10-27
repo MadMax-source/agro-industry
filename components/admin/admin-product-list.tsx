@@ -5,7 +5,7 @@ import Link from 'next/link'
 import { toast } from 'sonner'
 import { Pencil, Plus, Search, Trash2 } from 'lucide-react'
 import type { Product, StockStatus } from '@/types'
-import { useCatalogStore } from '@/store/catalog-store'
+import { useAdminCatalog } from '@/contexts/admin-catalog-context'
 import { formatNaira, getStockStatus } from '@/lib/catalog'
 import { AdminPageHeader } from '@/components/admin/admin-page-header'
 import { SelectChevron, nativeSelectClass } from '@/components/admin/form-field'
@@ -29,9 +29,7 @@ type AdminSort = 'updated' | 'name' | 'price-asc' | 'price-desc' | 'stock-asc'
 const dateFormatter = new Intl.DateTimeFormat('en-NG', { day: 'numeric', month: 'short', year: 'numeric' })
 
 export function AdminProductList() {
-  const products = useCatalogStore((s) => s.products)
-  const categories = useCatalogStore((s) => s.categories)
-  const deleteProduct = useCatalogStore((s) => s.deleteProduct)
+  const { products, categories, deleteProduct } = useAdminCatalog()
 
   const [query, setQuery] = useState('')
   const [categoryId, setCategoryId] = useState('all')
@@ -65,11 +63,15 @@ export function AdminProductList() {
     })
   }, [products, query, categoryId, stock, sort])
 
-  const confirmDelete = () => {
+  const confirmDelete = async () => {
     if (!pendingDelete) return
-    deleteProduct(pendingDelete.id)
-    toast.success(`${pendingDelete.name} deleted`)
-    setPendingDelete(null)
+    try {
+      await deleteProduct(pendingDelete.id)
+      toast.success(`${pendingDelete.name} deleted`)
+      setPendingDelete(null)
+    } catch (error) {
+      toast.error(error instanceof Error ? error.message : 'Unable to delete product.')
+    }
   }
 
   return (

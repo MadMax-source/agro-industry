@@ -2,14 +2,14 @@
 
 import Link from 'next/link'
 import { Loader2 } from 'lucide-react'
-import { useCatalogStore } from '@/store/catalog-store'
+import { useAdminCatalog } from '@/contexts/admin-catalog-context'
 import { ProductForm } from '@/components/admin/product-form'
 
 export function EditProduct({ id }: { id: string }) {
-  const product = useCatalogStore((s) => s.products.find((p) => p.id === id))
-  const hasHydrated = useCatalogStore((s) => s.hasHydrated)
+  const { products, loading } = useAdminCatalog()
+  const product = products.find((p) => p.id === id)
 
-  if (!hasHydrated) {
+  if (loading) {
     return (
       <div className="flex justify-center py-20">
         <Loader2 className="size-6 animate-spin text-primary" aria-label="Loading product" />

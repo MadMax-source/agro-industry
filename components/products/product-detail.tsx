@@ -64,7 +64,7 @@ export function ProductDetail({ slug }: { slug: string }) {
 
         <div className="mt-8 grid gap-10 lg:grid-cols-2 lg:gap-14">
           <Reveal>
-            <ProductGallery images={product.images} name={product.name} />
+            <ProductGallery images={product.images} name={product.name} video={product.video} />
           </Reveal>
 
           <Reveal delay={0.1} className="flex flex-col">

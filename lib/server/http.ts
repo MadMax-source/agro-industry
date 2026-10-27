@@ -1,0 +1,23 @@
+import 'server-only'
+import { NextResponse } from 'next/server'
+import { ZodError } from 'zod'
+
+export function apiError(error: unknown) {
+  if (error instanceof SyntaxError) {
+    return NextResponse.json({ error: 'Request body must contain valid JSON.' }, { status: 400 })
+  }
+
+  if (error instanceof ZodError) {
+    return NextResponse.json(
+      { error: 'Invalid request data.', details: error.issues.map((issue) => ({ field: issue.path.join('.'), message: issue.message })) },
+      { status: 400 },
+    )
+  }
+
+  if (error && typeof error === 'object' && 'code' in error && error.code === 11000) {
+    return NextResponse.json({ error: 'A record with the same slug or SKU already exists.' }, { status: 409 })
+  }
+
+  console.error('API request failed:', error)
+  return NextResponse.json({ error: 'The request could not be completed.' }, { status: 500 })
+}

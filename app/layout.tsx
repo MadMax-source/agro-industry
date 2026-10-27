@@ -9,13 +9,13 @@ const playfair = Playfair_Display({ subsets: ['latin'], variable: '--font-playfa
 
 export const metadata: Metadata = {
   title: {
-    default: 'Funalom Enterprises | Agricultural Inputs & Agrochemicals in Lagos',
+    default: 'Funalom Enterprises | Agricultural Inputs & Agrochemicals in Abuja',
     template: '%s | Funalom Enterprises',
   },
   description:
-    'Shop quality fertilizers, crop protection products, seeds, plant growth regulators, and farm essentials from Funalom Enterprises in Lagos, Nigeria.',
+    'Shop quality fertilizers, crop protection products, seeds, plant growth regulators, and farm essentials from Funalom Enterprises in Abuja, Nigeria.',
   keywords: [
-    'agro store Lagos',
+    'agro store Abuja',
     'fertilizers Nigeria',
     'agrochemicals',
     'herbicides',
@@ -25,7 +25,7 @@ export const metadata: Metadata = {
   ],
   openGraph: {
     title: 'Funalom Enterprises',
-    description: 'Your trusted partner in modern agriculture. Quality agricultural inputs from Lagos, Nigeria.',
+    description: 'Your trusted partner in modern agriculture. Quality agricultural inputs from Abuja, Nigeria.',
     type: 'website',
     locale: 'en_NG',
     images: ['/images/hero-farm.png'],

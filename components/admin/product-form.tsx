@@ -9,7 +9,7 @@ import { z } from 'zod'
 import { toast } from 'sonner'
 import { ArrowLeft, Loader2 } from 'lucide-react'
 import type { Product } from '@/types'
-import { useCatalogStore } from '@/store/catalog-store'
+import { useAdminCatalog } from '@/contexts/admin-catalog-context'
 import { SLUG_PATTERN, createId, isImageSource, slugify } from '@/lib/admin-utils'
 import { AdminPageHeader } from '@/components/admin/admin-page-header'
 import { FormField, FormSection, SelectChevron, nativeSelectClass } from '@/components/admin/form-field'
@@ -32,8 +32,9 @@ const baseSchema = z.object({
   price: z.number({ error: 'Enter a price.' }).positive('Price must be greater than zero.'),
   stock: z.number({ error: 'Enter stock quantity.' }).int('Stock must be a whole number.').min(0, 'Stock cannot be negative.'),
   sku: z.string().trim().optional(),
-  mainImage: z.string().trim(),
+  mainImage: z.string().trim().min(1, 'The first product image is required.'),
   extraImages: z.string(),
+  video: z.union([z.literal(''), z.url('Enter a valid video URL.')]),
   usageInfo: z.string().trim().min(10, 'Usage information is required.'),
   safetyInfo: z.string().trim().optional(),
   storageInfo: z.string().trim().optional(),
@@ -55,11 +56,12 @@ function toValues(product?: Product): ProductValues {
     formulation: product?.formulation ?? '',
     manufacturer: product?.manufacturer ?? '',
     packSize: product?.packSize ?? '',
-    price: product?.price ?? (undefined as unknown as number),
+    price: product?.price ?? 0,
     stock: product?.stock ?? 0,
     sku: product?.sku ?? '',
     mainImage: product?.images[0] ?? '',
     extraImages: product?.images.slice(1).join('\n') ?? '',
+    video: product?.video ?? '',
     usageInfo: product?.usageInfo ?? '',
     safetyInfo: product?.safetyInfo ?? '',
     storageInfo: product?.storageInfo ?? '',
@@ -72,10 +74,10 @@ const emptyToUndefined = (value?: string) => (value && value.trim() ? value.trim
 
 export function ProductForm({ product }: { product?: Product }) {
   const router = useRouter()
-  const products = useCatalogStore((s) => s.products)
-  const categories = useCatalogStore((s) => s.categories)
-  const upsertProduct = useCatalogStore((s) => s.upsertProduct)
+  const { products, categories, saveProduct, uploadMedia } = useAdminCatalog()
   const [slugTouched, setSlugTouched] = useState(!!product)
+  const [uploadingImage, setUploadingImage] = useState(false)
+  const [uploadingVideo, setUploadingVideo] = useState(false)
 
   const schema = useMemo(
     () =>
@@ -84,13 +86,13 @@ export function ProductForm({ product }: { product?: Product }) {
           ctx.addIssue({ code: 'custom', path: ['slug'], message: 'Another product already uses this slug.' })
         }
         const images = [values.mainImage, ...values.extraImages.split('\n')].map((s) => s.trim()).filter(Boolean)
+        if (images.length > 12) {
+          ctx.addIssue({ code: 'custom', path: ['extraImages'], message: 'A product can have up to 12 images.' })
+        }
         if (images.some((src) => !isImageSource(src))) {
           ctx.addIssue({ code: 'custom', path: ['extraImages'], message: 'Images must be /local paths or http(s) URLs.' })
         }
         if (values.status === 'published') {
-          if (!values.mainImage) {
-            ctx.addIssue({ code: 'custom', path: ['mainImage'], message: 'A main image is required to publish.' })
-          }
           const category = categories.find((c) => c.id === values.categoryId)
           if (category && !category.isActive) {
             ctx.addIssue({ code: 'custom', path: ['categoryId'], message: 'This category is inactive. Activate it or save as draft.' })
@@ -109,39 +111,83 @@ export function ProductForm({ product }: { product?: Product }) {
   } = useForm<ProductValues>({ resolver: zodResolver(schema), defaultValues: toValues(product) })
 
   const mainImage = useWatch({ control, name: 'mainImage' })
+  const extraImages = useWatch({ control, name: 'extraImages' })
+  const video = useWatch({ control, name: 'video' })
   const featured = useWatch({ control, name: 'featured' })
   const status = useWatch({ control, name: 'status' })
   const nameField = register('name')
 
-  const onSubmit = (values: ProductValues) => {
+  const onSubmit = async (values: ProductValues) => {
     const now = new Date().toISOString()
     const images = [values.mainImage, ...values.extraImages.split('\n')].map((s) => s.trim()).filter(Boolean)
-    upsertProduct({
-      id: product?.id ?? createId('prod'),
-      name: values.name.trim(),
-      slug: values.slug,
-      brand: values.brand.trim(),
-      categoryId: values.categoryId,
-      shortDescription: values.shortDescription.trim(),
-      description: values.description.trim(),
-      activeIngredient: emptyToUndefined(values.activeIngredient),
-      formulation: emptyToUndefined(values.formulation),
-      manufacturer: emptyToUndefined(values.manufacturer),
-      packSize: values.packSize.trim(),
-      price: values.price,
-      stock: values.stock,
-      sku: emptyToUndefined(values.sku),
-      images,
-      usageInfo: values.usageInfo.trim(),
-      safetyInfo: emptyToUndefined(values.safetyInfo),
-      storageInfo: emptyToUndefined(values.storageInfo),
-      featured: values.featured,
-      status: values.status,
-      createdAt: product?.createdAt ?? now,
-      updatedAt: now,
-    })
-    toast.success(product ? 'Product updated' : 'Product created')
-    router.push('/admin/products')
+    try {
+      await saveProduct({
+        id: product?.id ?? createId('prod'),
+        name: values.name.trim(),
+        slug: values.slug,
+        brand: values.brand.trim(),
+        categoryId: values.categoryId,
+        shortDescription: values.shortDescription.trim(),
+        description: values.description.trim(),
+        activeIngredient: emptyToUndefined(values.activeIngredient),
+        formulation: emptyToUndefined(values.formulation),
+        manufacturer: emptyToUndefined(values.manufacturer),
+        packSize: values.packSize.trim(),
+        price: values.price,
+        stock: values.stock,
+        sku: emptyToUndefined(values.sku),
+        images,
+        video: values.video,
+        usageInfo: values.usageInfo.trim(),
+        safetyInfo: emptyToUndefined(values.safetyInfo),
+        storageInfo: emptyToUndefined(values.storageInfo),
+        featured: values.featured,
+        status: values.status,
+        createdAt: product?.createdAt ?? now,
+        updatedAt: now,
+      })
+      toast.success(product ? 'Product updated' : 'Product created')
+      router.push('/admin/products')
+    } catch (error) {
+      toast.error(error instanceof Error ? error.message : 'Unable to save product.')
+    }
+  }
+
+  const uploadProductImages = async (files: FileList | null) => {
+    if (!files?.length) return
+    const selected = Array.from(files)
+    const existing = [mainImage, ...extraImages.split('\n')].map((image) => image.trim()).filter(Boolean)
+    if (existing.length + selected.length > 12) {
+      toast.error('A product can have up to 12 images.')
+      return
+    }
+
+    setUploadingImage(true)
+    try {
+      const urls = await Promise.all(selected.map((file) => uploadMedia(file, 'products')))
+      const next = [...existing, ...urls]
+      setValue('mainImage', next[0] ?? '', { shouldValidate: true, shouldDirty: true })
+      setValue('extraImages', next.slice(1).join('\n'), { shouldValidate: true, shouldDirty: true })
+      toast.success(`${urls.length} product ${urls.length === 1 ? 'image' : 'images'} uploaded`)
+    } catch (error) {
+      toast.error(error instanceof Error ? error.message : 'Unable to upload product images.')
+    } finally {
+      setUploadingImage(false)
+    }
+  }
+
+  const uploadProductVideo = async (file?: File) => {
+    if (!file) return
+    setUploadingVideo(true)
+    try {
+      const url = await uploadMedia(file, 'products', 'video')
+      setValue('video', url, { shouldValidate: true, shouldDirty: true })
+      toast.success('Product video uploaded')
+    } catch (error) {
+      toast.error(error instanceof Error ? error.message : 'Unable to upload product video.')
+    } finally {
+      setUploadingVideo(false)
+    }
   }
 
   return (
@@ -222,17 +268,54 @@ export function ProductForm({ product }: { product?: Product }) {
         </FormField>
       </FormSection>
 
-      <FormSection title="Images" description="Use local paths like /images/products/name.jpg or full https:// URLs.">
+      <FormSection title="Images" description="The first image is the required cover. Upload several images at once or enter image URLs.">
         <FormField id="mainImage" label="Main image" error={errors.mainImage?.message} className="sm:col-span-2">
           <div className="flex gap-4">
             <div className="relative size-20 shrink-0 overflow-hidden rounded-lg border border-border bg-secondary">
               <ProductImage src={isImageSource(mainImage) ? mainImage : undefined} alt="Main image preview" sizes="80px" />
             </div>
-            <Input id="mainImage" aria-invalid={!!errors.mainImage} placeholder="/images/products/..." {...register('mainImage')} />
+            <div className="flex min-w-0 flex-1 flex-col gap-2">
+              <Input id="mainImage" aria-invalid={!!errors.mainImage} placeholder="/images/products/... or https://..." {...register('mainImage')} />
+              <Input
+                id="productImagesUpload"
+                type="file"
+                multiple
+                accept="image/jpeg,image/png,image/webp,image/avif"
+                disabled={uploadingImage}
+                aria-label="Upload product images"
+                onChange={(event) => {
+                  void uploadProductImages(event.target.files)
+                  event.target.value = ''
+                }}
+              />
+              <p className="text-xs text-muted-foreground">Choose multiple JPEG, PNG, WebP or AVIF files (max 4 MB each, 12 images total).</p>
+            </div>
           </div>
         </FormField>
         <FormField id="extraImages" label="Additional images" optional error={errors.extraImages?.message} hint="One path or URL per line." className="sm:col-span-2">
           <Textarea id="extraImages" rows={3} aria-invalid={!!errors.extraImages} {...register('extraImages')} />
+        </FormField>
+      </FormSection>
+
+      <FormSection title="Product video" description="Optional. Upload an MP4, WebM, or MOV file up to 50 MB, or paste a video URL.">
+        <FormField id="video" label="Video URL" optional error={errors.video?.message} className="sm:col-span-2">
+          <div className="flex flex-col gap-3">
+            <Input id="video" type="url" aria-invalid={!!errors.video} placeholder="https://..." {...register('video')} />
+            <Input
+              id="videoUpload"
+              type="file"
+              accept="video/mp4,video/webm,video/quicktime"
+              disabled={uploadingVideo}
+              aria-label="Upload product video"
+              onChange={(event) => {
+                void uploadProductVideo(event.target.files?.[0])
+                event.target.value = ''
+              }}
+            />
+            {video && (
+              <video src={video} controls preload="metadata" className="max-h-64 w-full rounded-lg bg-black" aria-label={`${product?.name ?? 'Product'} video preview`} />
+            )}
+          </div>
         </FormField>
       </FormSection>
 
@@ -275,7 +358,7 @@ export function ProductForm({ product }: { product?: Product }) {
         </Link>
         <button
           type="submit"
-          disabled={isSubmitting}
+          disabled={isSubmitting || uploadingImage || uploadingVideo}
           className="inline-flex h-10 items-center gap-2 rounded-lg bg-primary px-5 text-sm font-semibold text-primary-foreground hover:bg-primary/90 disabled:opacity-70"
         >
           {isSubmitting && <Loader2 className="size-4 animate-spin" aria-hidden="true" />}

@@ -6,7 +6,7 @@ import { motion } from 'motion/react'
 import { toast } from 'sonner'
 import { Pencil, Plus, Trash2 } from 'lucide-react'
 import type { Category } from '@/types'
-import { useCatalogStore } from '@/store/catalog-store'
+import { useAdminCatalog } from '@/contexts/admin-catalog-context'
 import { countProductsByCategory } from '@/lib/catalog'
 import { AdminPageHeader } from '@/components/admin/admin-page-header'
 import { CategoryFormDialog } from '@/components/admin/category-form-dialog'
@@ -18,9 +18,7 @@ import { Switch } from '@/components/ui/switch'
 export function AdminCategories() {
   const router = useRouter()
   const searchParams = useSearchParams()
-  const categories = useCatalogStore((s) => s.categories)
-  const products = useCatalogStore((s) => s.products)
-  const setCategoryActive = useCatalogStore((s) => s.setCategoryActive)
+  const { categories, products, setCategoryActive } = useAdminCatalog()
 
   const [editing, setEditing] = useState<Category | null>(null)
   const [creating, setCreating] = useState(searchParams.get('new') === '1')
@@ -80,8 +78,10 @@ export function AdminCategories() {
                   checked={category.isActive}
                   aria-label={`${category.isActive ? 'Deactivate' : 'Activate'} ${category.name}`}
                   onCheckedChange={(v) => {
-                    setCategoryActive(category.id, !!v)
-                    toast.success(`${category.name} ${v ? 'activated' : 'deactivated'}`)
+                    void setCategoryActive(category.id, !!v).then(
+                      () => toast.success(`${category.name} ${v ? 'activated' : 'deactivated'}`),
+                      (error: unknown) => toast.error(error instanceof Error ? error.message : 'Unable to update category.'),
+                    )
                   }}
                 />
               </div>

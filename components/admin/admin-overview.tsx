@@ -4,7 +4,7 @@ import { useMemo } from 'react'
 import Link from 'next/link'
 import { motion } from 'motion/react'
 import { AlertTriangle, Boxes, FolderTree, Package, PackageX, Plus } from 'lucide-react'
-import { useCatalogStore } from '@/store/catalog-store'
+import { useAdminCatalog } from '@/contexts/admin-catalog-context'
 import { formatNaira, getStockStatus } from '@/lib/catalog'
 import { AdminPageHeader } from '@/components/admin/admin-page-header'
 import { ProductImage } from '@/components/products/product-image'
@@ -14,8 +14,7 @@ import { Stagger, staggerItem } from '@/components/shared/reveal'
 const dateFormatter = new Intl.DateTimeFormat('en-NG', { day: 'numeric', month: 'short', year: 'numeric' })
 
 export function AdminOverview() {
-  const products = useCatalogStore((s) => s.products)
-  const categories = useCatalogStore((s) => s.categories)
+  const { products, categories } = useAdminCatalog()
 
   const stats = useMemo(() => {
     const low = products.filter((p) => getStockStatus(p.stock) === 'low-stock')

@@ -36,6 +36,7 @@ export interface Product {
   stock: number
   sku?: string
   images: string[]
+  video?: string
   usageInfo: string
   safetyInfo?: string
   storageInfo?: string
@@ -52,6 +53,8 @@ export interface BusinessSettings {
   contactPhone: string
   contactEmail: string
   location: string
+  address: string
+  businessHours: string
   footerDescription: string
   whatsappGreeting: string
   whatsappTemplate: string

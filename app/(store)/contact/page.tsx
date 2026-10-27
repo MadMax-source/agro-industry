@@ -5,7 +5,7 @@ import { ContactForm } from '@/components/contact/contact-form'
 
 export const metadata: Metadata = {
   title: 'Contact Us',
-  description: 'Reach Funalom Enterprises on WhatsApp, phone, or email, or visit our store in Ikeja, Lagos.',
+  description: 'Reach Funalom Enterprises on WhatsApp, phone, or email, or visit us in Abuja, Nigeria.',
 }
 
 export default function ContactPage() {

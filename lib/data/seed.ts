@@ -254,8 +254,10 @@ export const seedSettings: BusinessSettings = {
   contactPhone: CONTACT_PHONE,
   contactEmail: CONTACT_EMAIL,
   location: BUSINESS_LOCATION,
+  address: BUSINESS_LOCATION,
+  businessHours: 'Monday-Saturday, 8:00 AM-6:00 PM',
   footerDescription:
-    'Quality agricultural inputs, crop protection solutions, and farm essentials for farmers and agribusinesses in Lagos and beyond.',
+    'Quality agricultural inputs, crop protection solutions, and farm essentials for farmers and agribusinesses in Abuja and across Nigeria.',
   whatsappGreeting: 'Hello {businessName}, I would like to make an enquiry.',
   whatsappTemplate:
     'Hello {businessName}, I would like to order:\nProduct: {productName}\nQuantity: {quantity}\nUnit Price: {price}\nSubtotal: {subtotal}\nProduct link: {productUrl}\nPlease confirm availability and delivery details.',

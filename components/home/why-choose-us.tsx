@@ -20,7 +20,7 @@ const REASONS = [
   {
     icon: PackageCheck,
     title: 'Reliable fulfilment',
-    description: 'Orders are confirmed quickly on WhatsApp and prepared for pickup or delivery within Lagos and beyond.',
+    description: 'Orders are confirmed quickly on WhatsApp and prepared for pickup or delivery within Abuja and nationwide.',
   },
 ]
 
