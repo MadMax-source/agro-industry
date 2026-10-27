@@ -106,6 +106,9 @@ export const useCatalogStore = create<CatalogState>()(
         const savedSettings = isRecord(saved.settings)
           ? { ...current.settings, ...saved.settings }
           : current.settings
+        if (savedSettings.businessName === 'Funalom Enterprises') {
+          savedSettings.businessName = seedSettings.businessName
+        }
         // If the number was never customised in-app, follow the value in lib/config.ts.
         if (saved.settings?.whatsappNumber === saved.configWhatsappNumber) {
           savedSettings.whatsappNumber = seedSettings.whatsappNumber

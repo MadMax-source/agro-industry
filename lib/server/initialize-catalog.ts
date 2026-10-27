@@ -48,8 +48,29 @@ async function migrateLegacyBusinessContactSettings() {
   }
 }
 
+async function migrateLegacyBusinessName() {
+  const migrationId = 'business-name-the-funalom-enterprise'
+  const claim = await CatalogMetaModel.updateOne(
+    { _id: migrationId },
+    { $setOnInsert: { initializedAt: new Date() } },
+    { upsert: true },
+  )
+  if (claim.upsertedCount !== 1) return
+
+  try {
+    await BusinessSettingsModel.updateOne(
+      { id: 'business-settings', businessName: 'Funalom Enterprises' },
+      { $set: { businessName: seedSettings.businessName } },
+    )
+  } catch (error) {
+    await CatalogMetaModel.deleteOne({ _id: migrationId })
+    throw error
+  }
+}
+
 export async function initializeDemoCatalog() {
   await migrateLegacyBusinessContactSettings()
+  await migrateLegacyBusinessName()
 
   const existing = await CatalogMetaModel.findById('catalog-initialized').lean()
   if (existing) return

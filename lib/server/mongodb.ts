@@ -18,7 +18,11 @@ export async function connectToDatabase() {
   if (!cached.promise) {
     const uri = process.env.MONGODB_URI
     if (!uri) throw new Error('MONGODB_URI is not configured.')
-    cached.promise = mongoose.connect(uri, { bufferCommands: false })
+    cached.promise = mongoose.connect(uri, {
+      bufferCommands: false,
+      connectTimeoutMS: 10_000,
+      serverSelectionTimeoutMS: 10_000,
+    })
   }
 
   try {

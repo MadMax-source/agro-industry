@@ -25,7 +25,7 @@ export function HeroSection() {
         <div className="max-w-2xl">
           <p className="inline-flex items-center gap-2 rounded-full bg-primary-foreground/10 px-3 py-1 text-xs font-semibold uppercase tracking-[0.18em] text-primary-foreground ring-1 ring-inset ring-primary-foreground/20">
             <span className="size-1.5 rounded-full bg-earth" aria-hidden="true" />
-            Funalom Enterprises · Abuja
+            The Funalom Enterprise · Abuja
           </p>
           <h1
             id="hero-title"

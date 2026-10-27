@@ -4,7 +4,7 @@ import { AdminShell } from '@/components/admin/admin-shell'
 import { AdminCatalogProvider } from '@/contexts/admin-catalog-context'
 
 export const metadata: Metadata = {
-  title: { default: 'Admin', template: '%s · Admin · Funalom Enterprises' },
+  title: { default: 'Admin', template: '%s · Admin · The Funalom Enterprise' },
   robots: { index: false, follow: false },
 }
 
