@@ -122,13 +122,6 @@ export function AdminLoginForm() {
             </button>
           </form>
 
-          <div className="mt-6 flex gap-3 rounded-lg border border-earth/30 bg-earth/10 p-3 text-xs leading-relaxed text-foreground">
-            <Info className="mt-0.5 size-4 shrink-0 text-earth" aria-hidden="true" />
-            <p>
-              Prototype access only. Demo login: <strong>{DEMO_ADMIN_EMAIL}</strong> / <strong>{DEMO_ADMIN_PASSWORD}</strong>.
-              This check runs in the browser and is not real security — add server-side authentication before going live.
-            </p>
-          </div>
         </div>
 
         <p className="mt-6 text-center text-sm text-muted-foreground">
