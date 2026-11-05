@@ -2,13 +2,15 @@
 
 import Link from 'next/link'
 import { motion } from 'motion/react'
-import { ArrowUpRight, Bird, Bug, CircleDot, Droplets, Leaf, Sprout } from 'lucide-react'
+import { ArrowUpRight, Bird, Bug, CircleDot, Droplets, Leaf, PackageOpen, Sprout, Stethoscope } from 'lucide-react'
 
 const SERVICES = [
   { icon: Sprout, label: 'Crops', title: 'Grow with confidence', copy: 'Seeds, fertilizers and crop protection for stronger harvests.', tone: 'bg-[#d9f35b]' },
-  { icon: Bird, label: 'Livestock', title: 'Healthy stock, better returns', copy: 'Poultry, feeds and everyday livestock essentials for your farm.', tone: 'bg-[#ffb347]' },
-  { icon: Bug, label: 'Fumigation', title: 'Protect every space', copy: 'Professional fumigation for homes, farms, stores and businesses.', tone: 'bg-[#b7e4c7]' },
-  { icon: Droplets, label: 'Farm services', title: 'Practical farm support', copy: 'Reliable advice and tools from planting to post-harvest.', tone: 'bg-[#f8d6c1]' },
+  { icon: Bird, label: 'Livestock farming', title: 'Healthy stock, better returns', copy: 'Poultry, feeds and everyday livestock essentials for your farm.', tone: 'bg-[#ffb347]' },
+  { icon: PackageOpen, label: 'Livestock feeds', title: 'Better nutrition, stronger herds', copy: 'Quality poultry, fish, cattle and small-stock feeds selected for healthy growth.', tone: 'bg-[#f5c2e7]' },
+  { icon: Bug, label: 'Fumigation & biosecurity', title: 'Protect every space', copy: 'Professional fumigation and pest-control support for homes, farms, stores and businesses.', tone: 'bg-[#b7e4c7]' },
+  { icon: Droplets, label: 'Farm care & maintenance', title: 'Practical farm support', copy: 'Reliable advice, equipment and maintenance support from planting to post-harvest.', tone: 'bg-[#f8d6c1]' },
+  { icon: Stethoscope, label: 'Farm consultancy', title: 'Expert guidance for every season', copy: 'Practical one-on-one advice to help you plan, manage and improve your farm.', tone: 'bg-[#b9d7ff]' },
 ]
 
 export function AgricultureShowcase() {
