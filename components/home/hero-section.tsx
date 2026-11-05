@@ -1,6 +1,5 @@
 'use client'
 
-import Image from 'next/image'
 import Link from 'next/link'
 import { ArrowRight, ShieldCheck, Truck, Sprout, Bird } from 'lucide-react'
 import { motion } from 'motion/react'
@@ -15,17 +14,23 @@ const HIGHLIGHTS = [
 export function HeroSection() {
   return (
     <section aria-labelledby="hero-title" className="relative isolate overflow-hidden bg-primary">
-      <Image
-        src="/images/hero-farm.png"
-        alt=""
-        fill
-        priority
-        sizes="100vw"
-        className="-z-10 object-cover"
-      />
-      <div className="absolute inset-0 -z-10 bg-gradient-to-r from-primary via-primary/85 to-primary/30" aria-hidden="true" />
-      <motion.div animate={{ rotate: 360 }} transition={{ duration: 28, repeat: Infinity, ease: 'linear' }} className="absolute -right-28 -top-28 -z-10 size-96 rounded-full border border-primary-foreground/15" aria-hidden="true" />
-      <div className="absolute bottom-0 right-0 -z-10 h-1/2 w-1/2 opacity-30 [background-image:radial-gradient(circle_at_center,var(--earth)_1px,transparent_1.5px)] [background-size:18px_18px]" aria-hidden="true" />
+      <div className="absolute inset-0 z-0 overflow-hidden bg-gradient-to-br from-primary via-primary/95 to-earth/90" aria-hidden="true">
+        <motion.div
+          className="absolute -left-16 -top-20 size-80 rounded-full bg-lime/25 blur-3xl"
+          animate={{ x: [0, 90, 20, 0], y: [0, 35, 100, 0], scale: [1, 1.18, 0.92, 1] }}
+          transition={{ duration: 16, repeat: Infinity, ease: 'easeInOut' }}
+        />
+        <motion.div
+          className="absolute -bottom-28 right-0 size-[28rem] rounded-full bg-sky-300/15 blur-3xl"
+          animate={{ x: [0, -70, -20, 0], y: [0, -45, 35, 0], scale: [1, 0.9, 1.15, 1] }}
+          transition={{ duration: 19, repeat: Infinity, ease: 'easeInOut', delay: 1 }}
+        />
+        <motion.div
+          className="absolute left-1/2 top-1/3 size-56 rounded-full bg-amber-200/10 blur-3xl"
+          animate={{ x: [-20, 80, -40, -20], y: [0, 50, -20, 0] }}
+          transition={{ duration: 14, repeat: Infinity, ease: 'easeInOut', delay: 2 }}
+        />
+      </div>
 
       <div className="relative z-10 mx-auto flex max-w-7xl flex-col px-4 py-20 sm:px-6 md:py-28 lg:px-8 lg:py-36">
         <div className="max-w-2xl">
