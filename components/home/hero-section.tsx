@@ -14,7 +14,7 @@ const HIGHLIGHTS = [
 export function HeroSection() {
   return (
     <section aria-labelledby="hero-title" className="relative isolate overflow-hidden bg-primary">
-      <div className="absolute inset-0 -z-10 overflow-hidden bg-[radial-gradient(circle_at_15%_20%,color-mix(in_oklab,var(--earth)_28%,transparent),transparent_34%),radial-gradient(circle_at_88%_18%,color-mix(in_oklab,var(--primary-foreground)_13%,transparent),transparent_30%),linear-gradient(120deg,var(--primary),color-mix(in_oklab,var(--primary)_72%,var(--earth)))]" aria-hidden="true">
+      <div className="absolute inset-0 z-0 overflow-hidden bg-[radial-gradient(circle_at_15%_20%,color-mix(in_oklab,var(--earth)_28%,transparent),transparent_34%),radial-gradient(circle_at_88%_18%,color-mix(in_oklab,var(--primary-foreground)_13%,transparent),transparent_30%),linear-gradient(120deg,var(--primary),color-mix(in_oklab,var(--primary)_72%,var(--earth)))]" aria-hidden="true">
         <motion.div
           animate={{ x: [0, 80, -24, 0], y: [0, 34, -18, 0], scale: [1, 1.15, 0.96, 1] }}
           transition={{ duration: 18, repeat: Infinity, ease: 'easeInOut' }}
@@ -33,7 +33,7 @@ export function HeroSection() {
         <div className="absolute inset-0 opacity-20 [background-image:linear-gradient(120deg,transparent_0%,var(--earth)_48%,transparent_50%)] [background-size:14rem_14rem]" />
       </div>
 
-      <div className="mx-auto flex max-w-7xl flex-col px-4 py-20 sm:px-6 md:py-28 lg:px-8 lg:py-36">
+      <div className="relative z-10 mx-auto flex max-w-7xl flex-col px-4 py-20 sm:px-6 md:py-28 lg:px-8 lg:py-36">
         <div className="max-w-2xl">
           <motion.p initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6 }} className="inline-flex items-center gap-2 rounded-full bg-primary-foreground/10 px-3 py-1 text-xs font-semibold uppercase tracking-[0.18em] text-primary-foreground ring-1 ring-inset ring-primary-foreground/20">
             <span className="size-1.5 rounded-full bg-earth" aria-hidden="true" />
