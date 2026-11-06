@@ -248,7 +248,7 @@ export const seedProducts: Product[] = [
 ]
 
 export const seedSettings: BusinessSettings = {
-  businessName: 'The Funalom Enterprise',
+  businessName: 'The Funalom Enterprises',
   tagline: 'Your Trusted Partner in Modern Agriculture.',
   whatsappNumber: WHATSAPP_NUMBER,
   contactPhone: CONTACT_PHONE,
