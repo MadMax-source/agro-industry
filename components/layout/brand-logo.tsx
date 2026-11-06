@@ -6,7 +6,7 @@ export function BrandLogo({ className, inverted = false }: { className?: string;
     <Link
       href="/"
       className={cn('group flex items-center gap-2.5 rounded-md', className)}
-      aria-label="The Funalom Enterprise home"
+      aria-label="The Funalom Enterprises home"
     >
       <span
         className={cn(

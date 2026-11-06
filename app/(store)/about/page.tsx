@@ -7,7 +7,7 @@ import { ContactCta } from '@/components/home/contact-cta'
 export const metadata: Metadata = {
   title: 'About Us',
   description:
-    'The Funalom Enterprise supplies quality agricultural inputs to farmers, agro-dealers, and agribusinesses from Abuja, Nigeria.',
+    'The Funalom Enterprises supplies quality agricultural inputs to farmers, agro-dealers, and agribusinesses from Abuja, Nigeria.',
 }
 
 const VALUES = [
@@ -37,7 +37,7 @@ export default function AboutPage() {
   return (
     <>
       <PageHeader
-        title="About The Funalom Enterprise"
+        title="About The Funalom Enterprises"
         description="Your trusted partner in modern agriculture, serving farmers from Abuja, Nigeria."
         breadcrumbs={[{ label: 'Home', href: '/' }, { label: 'About' }]}
       />
@@ -46,7 +46,7 @@ export default function AboutPage() {
         <div className="relative aspect-[4/3] overflow-hidden rounded-2xl bg-secondary">
           <Image
             src="/images/about-store.png"
-            alt="Shelves of fertilizers, seeds, and crop protection products inside The Funalom Enterprise store"
+            alt="Shelves of fertilizers, seeds, and crop protection products inside The Funalom Enterprises store"
             fill
             sizes="(min-width: 1024px) 50vw, 100vw"
             className="object-cover"
@@ -59,7 +59,7 @@ export default function AboutPage() {
           </h2>
           <div className="mt-5 flex flex-col gap-4 leading-relaxed text-pretty text-muted-foreground">
             <p>
-              The Funalom Enterprise is an agricultural input supplier based in Abuja, Nigeria. We stock fertilizers,
+              The Funalom Enterprises is an agricultural input supplier based in Abuja, Nigeria. We stock fertilizers,
               herbicides, pesticides, fungicides, seeds, plant growth regulators, soil conditioners, and essential farm
               tools.
             </p>
