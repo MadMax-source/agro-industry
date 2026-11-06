@@ -113,13 +113,19 @@ export function AdminLoginForm() {
               {isSubmitting && <Loader2 className="size-4 animate-spin" aria-hidden="true" />}
               Sign in
             </button>
+            
+            {/*
             <button
               type="button"
               onClick={async () => finish(await demoAuthProvider.enterDemo())}
               className="inline-flex h-11 items-center justify-center rounded-lg border border-border font-semibold text-foreground transition-colors hover:bg-secondary"
             >
-              Enter demo admin
+              Login as Admin
             </button>
+          
+            */}
+            
+            
           </form>
 
         </div>

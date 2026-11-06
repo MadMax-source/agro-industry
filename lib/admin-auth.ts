@@ -34,7 +34,7 @@ function saveSession(email: string): AdminSession {
 
 export const demoAuthProvider: AdminAuthProvider = {
   async signIn(email, password) {
-    if (email.trim().toLowerCase() !== DEMO_ADMIN_EMAIL || password !== DEMO_ADMIN_PASSWORD) {
+    if (email.trim().toLowerCase() !== DEMO_ADMIN_EMAIL.trim().toLowerCase() || password !== DEMO_ADMIN_PASSWORD) {
       return { ok: false, error: 'Incorrect email or password.' }
     }
     return { ok: true, session: saveSession(DEMO_ADMIN_EMAIL) }
