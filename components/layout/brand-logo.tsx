@@ -39,7 +39,7 @@ export function BrandLogo({ className, inverted = false }: { className?: string;
             inverted ? 'text-primary-foreground/70' : 'text-muted-foreground',
           )}
         >
-          Enterprise
+Enterprises
         </span>
       </span>
     </Link>
